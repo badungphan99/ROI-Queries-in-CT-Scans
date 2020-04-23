@@ -1,6 +1,8 @@
 import json
 import csv
 import os
+import cv2
+from feature_extraction.haar_test import *
 
 
 def extract_csv(parent_dir_path: str, json_path: str, features_out_path: str):
@@ -8,8 +10,6 @@ def extract_csv(parent_dir_path: str, json_path: str, features_out_path: str):
 
     with open(json_path) as f:
         data = json.load(f)
-
-    print(len([f for f in os.listdir(parent_dir_path) if os.path.isfile(os.path.join(parent_dir_path, f))]))
 
     for image in data["images"]:
         head_begin = -1
@@ -23,6 +23,10 @@ def extract_csv(parent_dir_path: str, json_path: str, features_out_path: str):
         if "patient_dir" in image:
             patient_dir = os.path.join(parent_dir_path, image["patient_dir"])
             num_img = len([f for f in os.listdir(patient_dir) if os.path.isfile(os.path.join(patient_dir, f))])
+        else:
+            print("ERROR: check path img in json file")
+            return False
+
         for r in regions:
             if r in image:
                 if "begin" in image[r]:
@@ -65,15 +69,17 @@ class Patient:
         self.__features = []
 
     def init_features(self):
-        pass
+        for img_path in [f for f in os.listdir(self.__patient_dir) if os.path.isfile(os.path.join(self.__patient_dir, f))]:
+            img = cv2.imread(os.path.join(self.__patient_dir, img_path), 0)
+            img_size = 256
+            self.__features.append(haar_extract(img, img_size))
+
 
     def write_csv(self, csv_path: str):
         with open(csv_path, 'a') as csv_file:
             wr = csv.writer(csv_file, delimiter=',')
             for i in range(0, self.__num_img):
                 region = 0
-                region_begin = 0.1
-                region_end = 0.2
                 if self.__head_begin <= i <= self.__head_end:
                     region = 1
                 if self.__head_begin <= i <= self.__head_begin + 5:
