@@ -1,0 +1,44 @@
+{
+  "head": {
+    "image": [
+      {
+        "parent_dir": "/path/in/here/1",
+        "begin": 1,
+        "end":10
+      },
+      {
+        "parent_dir": "/path/in/here/2",
+        "begin": 1,
+        "end":10
+      }
+    ]
+  },
+  "chest": {
+    "image": [
+      {
+        "parent_dir": "/path/in/here/1",
+        "begin": 1,
+        "end":10
+      },
+      {
+        "parent_dir": "/path/in/here/2",
+        "begin": 1,
+        "end":10
+      }
+    ]
+  },
+  "abdominal": {
+    "image": [
+      {
+        "parent_dir": "/path/in/here/1",
+        "begin": 1,
+        "end":10
+      },
+      {
+        "parent_dir": "/path/in/here/2",
+        "begin": 1,
+        "end":10
+      }
+    ]
+  }
+}
