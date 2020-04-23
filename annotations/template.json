@@ -1,44 +1,30 @@
 {
-  "head": {
-    "image": [
-      {
-        "parent_dir": "/path/in/here/1",
+  "images": [
+    {
+      "patient_dir": "/path/in/here/1",
+      "head": {
         "begin": 1,
-        "end":10
+        "end": 10
       },
-      {
-        "parent_dir": "/path/in/here/2",
-        "begin": 1,
-        "end":10
-      }
-    ]
-  },
-  "chest": {
-    "image": [
-      {
-        "parent_dir": "/path/in/here/1",
-        "begin": 1,
-        "end":10
+      "chest": {
+        "begin": 11,
+        "end": 20
       },
-      {
-        "parent_dir": "/path/in/here/2",
-        "begin": 1,
-        "end":10
+      "abdominal": {
+        "begin": 21,
+        "end": 30
       }
-    ]
-  },
-  "abdominal": {
-    "image": [
-      {
-        "parent_dir": "/path/in/here/1",
+    },
+    {
+      "patient_dir": "/path/in/here/2",
+      "head": {
         "begin": 1,
-        "end":10
+        "end": 10
       },
-      {
-        "parent_dir": "/path/in/here/2",
-        "begin": 1,
-        "end":10
+      "chest": {
+        "begin": 11,
+        "end": 20
       }
-    ]
-  }
+    }
+  ]
 }
