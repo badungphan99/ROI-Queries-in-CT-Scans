@@ -4,8 +4,9 @@ import os
 import cv2
 from feature_extraction.haar_test import *
 
-
-def extract_csv(parent_dir_path: str, json_path: str, features_out_path: str):
+# mode : 0 - lay cac gia tri theo vung dau, bung, nguc
+# mode : 1 - lay cac gia tri theo bat dau va ket thuc cua moi vung
+def extract_csv(parent_dir_path: str, json_path: str, features_out_path: str, mode: int = 1):
     regions = ["head", "chest", "abdominal"]
 
     with open(json_path) as f:
@@ -52,7 +53,7 @@ def extract_csv(parent_dir_path: str, json_path: str, features_out_path: str):
 
         patient = Patient(patient_dir, num_img, head_begin, head_end, chest_begin, chest_end, abdominal_begin,abdominal_end)
         patient.init_features()
-        patient.write_csv(features_out_path)
+        patient.write_csv(features_out_path, mode)
 
 
 class Patient:
@@ -75,33 +76,36 @@ class Patient:
             self.__features.append(haar_extract(img, img_size))
 
 
-    def write_csv(self, csv_path: str):
+    def write_csv(self, csv_path: str, mode: int):
         with open(csv_path, 'a') as csv_file:
             wr = csv.writer(csv_file, delimiter=',')
             for i in range(0, self.__num_img):
                 region = 0
+
                 if self.__head_begin <= i <= self.__head_end:
-                    region = 1
-                if self.__head_begin <= i <= self.__head_begin + 5:
-                    wr.writerow([str(1.1)] + list(self.__features[i]))
-                if self.__head_end - 5 <= i <= self.__head_end:
-                    wr.writerow([str(1.2)] + list(self.__features[i]))
-
-                if self.__chest_begin <= i <= self.__chets_end:
                     region = 2
-                if self.__chest_begin <= i <= self.__chest_begin + 5:
-                    wr.writerow([str(2.1)] + list(self.__features[i]))
-                if self.__chets_end - 5 <= i <= self.__chets_end:
-                    wr.writerow([str(2.2)] + list(self.__features[i]))
-
+                if self.__chest_begin <= i <= self.__chets_end:
+                    region = 5
                 if self.__abdominal_begin <= i <= self.__abdominal_end:
-                    region = 3
-                if self.__abdominal_begin <= i <= self.__head_begin + 5:
-                    wr.writerow([str(3.1)] + list(self.__features[i]))
-                if self.__abdominal_end - 5 <= i <= self.__abdominal_end:
-                    wr.writerow([str(3.2)] + list(self.__features[i]))
+                    region = 8
+                if mode == 0:
+                    wr.writerow([str(region)] + list(self.__features[i]))
 
-                wr.writerow([str(region)] + list(self.__features[i]))
+                if mode == 1:
+                    if self.__head_begin <= i <= self.__head_begin + 5:
+                        wr.writerow([str(1)] + list(self.__features[i]))
+                    if self.__head_end - 5 <= i <= self.__head_end:
+                        wr.writerow([str(3)] + list(self.__features[i]))
+                    if self.__chest_begin <= i <= self.__chest_begin + 5:
+                        wr.writerow([str(4)] + list(self.__features[i]))
+                    if self.__chets_end - 5 <= i <= self.__chets_end:
+                        wr.writerow([str(6)] + list(self.__features[i]))
+                    if self.__abdominal_begin <= i <= self.__head_begin + 5:
+                        wr.writerow([str(7)] + list(self.__features[i]))
+                    if self.__abdominal_end - 5 <= i <= self.__abdominal_end:
+                        wr.writerow([str(9)] + list(self.__features[i]))
+
+
 
 
 

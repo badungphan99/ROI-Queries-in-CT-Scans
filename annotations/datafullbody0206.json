@@ -1,0 +1,94 @@
+{
+  "images": [
+    {
+      "patient_dir": "FULL_001",
+      "head": {
+        "begin": 0,
+        "end": 60
+      },
+      "chest": {
+        "begin": 84,
+        "end": 169
+      },
+      "abdominal": {
+        "begin": 247,
+        "end": 272
+      }
+    },
+    {
+      "patient_dir": "FULL_002",
+      "head": {
+        "begin": 2,
+        "end": 65
+      },
+      "chest": {
+        "begin": 97,
+        "end": 170
+      },
+      "abdominal": {
+        "begin": 270,
+        "end": 296
+      }
+    },
+    {
+      "patient_dir": "FULL_003",
+      "head": {
+        "begin": 0,
+        "end": 66
+      },
+      "chest": {
+        "begin": 11,
+        "end": 20
+      },
+      "abdominal": {
+        "begin": 21,
+        "end": 30
+      }
+    },
+    {
+      "patient_dir": "FULL_004",
+      "head": {
+        "begin": 3,
+        "end": 60
+      },
+      "chest": {
+        "begin": 11,
+        "end": 20
+      },
+      "abdominal": {
+        "begin": 21,
+        "end": 30
+      }
+    },
+    {
+      "patient_dir": "FULL_005",
+      "head": {
+        "begin": 3,
+        "end": 62
+      },
+      "chest": {
+        "begin": 11,
+        "end": 20
+      },
+      "abdominal": {
+        "begin": 21,
+        "end": 30
+      }
+    },
+    {
+      "patient_dir": "FULL_006",
+      "head": {
+        "begin": 2,
+        "end": 71
+      },
+      "chest": {
+        "begin": 11,
+        "end": 20
+      },
+      "abdominal": {
+        "begin": 21,
+        "end": 30
+      }
+    }
+  ]
+}
