@@ -23,7 +23,9 @@ def extract_csv(parent_dir_path: str, json_path: str, features_out_path: str, mo
         patient_dir = ""
         if "patient_dir" in image:
             patient_dir = os.path.join(parent_dir_path, image["patient_dir"])
+            print(patient_dir)
             num_img = len([f for f in os.listdir(patient_dir) if os.path.isfile(os.path.join(patient_dir, f))])
+            print(num_img)
         else:
             print("ERROR: check path img in json file")
             return False
@@ -51,7 +53,7 @@ def extract_csv(parent_dir_path: str, json_path: str, features_out_path: str, mo
                     print("ERROR: no", r, "end in", image["patient_dir"])
                     return False
 
-        patient = Patient(patient_dir, num_img, head_begin, head_end, chest_begin, chest_end, abdominal_begin,abdominal_end)
+        patient = Patient(patient_dir, num_img, head_begin, head_end, chest_begin, chest_end, abdominal_begin, abdominal_end)
         patient.init_features()
         patient.write_csv(features_out_path, mode)
 
@@ -73,12 +75,13 @@ class Patient:
         for img_path in [f for f in os.listdir(self.__patient_dir) if os.path.isfile(os.path.join(self.__patient_dir, f))]:
             img = cv2.imread(os.path.join(self.__patient_dir, img_path), 0)
             img_size = 256
-            self.__features.append(haar_extract(img, img_size))
+            self.__features.append(haar_extract(img, (img_size, img_size)))
 
 
     def write_csv(self, csv_path: str, mode: int):
         with open(csv_path, 'a') as csv_file:
             wr = csv.writer(csv_file, delimiter=',')
+            count = 0
             for i in range(0, self.__num_img):
                 region = 0
 
@@ -91,7 +94,10 @@ class Patient:
                 if mode == 0:
                     wr.writerow([str(region)] + list(self.__features[i]))
 
-                if mode == 1:
+                if mode == 1 :
+                    if region == 0 and count < 6:
+                        wr.writerow([str(region)] + list(self.__features[i]))
+                        count += 1
                     if self.__head_begin <= i <= self.__head_begin + 5:
                         wr.writerow([str(1)] + list(self.__features[i]))
                     if self.__head_end - 5 <= i <= self.__head_end:
@@ -100,7 +106,7 @@ class Patient:
                         wr.writerow([str(4)] + list(self.__features[i]))
                     if self.__chets_end - 5 <= i <= self.__chets_end:
                         wr.writerow([str(6)] + list(self.__features[i]))
-                    if self.__abdominal_begin <= i <= self.__head_begin + 5:
+                    if self.__abdominal_begin <= i <= self.__abdominal_begin + 5:
                         wr.writerow([str(7)] + list(self.__features[i]))
                     if self.__abdominal_end - 5 <= i <= self.__abdominal_end:
                         wr.writerow([str(9)] + list(self.__features[i]))
@@ -110,8 +116,8 @@ class Patient:
 
 
 if __name__ == "__main__":
-    parent_dir = "/home/dungpb/HEAD_007/crop"
-    json_path = "/home/dungpb/Work/ROI-Queries-in-CT-Scans/annotations/template.json"
-    csv_path = "abc"
+    parent_dir = "/home/dungpb/dataset1"
+    json_path = "/home/dungpb/Work/HUS-AC/ROI-Queries-in-CT-Scans/annotations/datafullbody0206.json"
+    csv_path = "dataset_features/0206.csv"
 
-    extract_csv(parent_dir, json_path, csv_path)
+    extract_csv(parent_dir, json_path, csv_path, 1)
