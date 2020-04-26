@@ -72,11 +72,12 @@ class Patient:
         self.__features = []
 
     def init_features(self):
-        for img_path in [f for f in os.listdir(self.__patient_dir) if os.path.isfile(os.path.join(self.__patient_dir, f))]:
-            img = cv2.imread(os.path.join(self.__patient_dir, img_path), 0)
+        img_path = [f for f in os.listdir(self.__patient_dir) if os.path.isfile(os.path.join(self.__patient_dir, f))]
+        img_path.sort()
+        for i in range(0,self.__num_img - 1):
+            img = cv2.imread(os.path.join(self.__patient_dir, img_path[i]), 0)
             img_size = 256
             self.__features.append(haar_extract(img, (img_size, img_size)))
-
 
     def write_csv(self, csv_path: str, mode: int):
         with open(csv_path, 'a') as csv_file:
@@ -118,6 +119,6 @@ class Patient:
 if __name__ == "__main__":
     parent_dir = "/home/dungpb/dataset1"
     json_path = "/home/dungpb/Work/HUS-AC/ROI-Queries-in-CT-Scans/annotations/datafullbody0206.json"
-    csv_path = "dataset_features/0206.csv"
+    csv_path = "dataset_features/02063.csv"
 
     extract_csv(parent_dir, json_path, csv_path, 1)
