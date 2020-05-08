@@ -1,5 +1,5 @@
 {
-  "images": [
+  "1": [
     {
       "patient_dir": "FULL_001",
       "head": {
@@ -74,7 +74,9 @@
         "begin": 248,
         "end": 276
       }
-    },
+    }
+  ],
+  "images": [
     {
       "patient_dir": "FULL_006",
       "head": {

@@ -119,6 +119,6 @@ class Patient:
 if __name__ == "__main__":
     parent_dir = "/home/dungpb/dataset1"
     json_path = "/home/dungpb/Work/HUS-AC/ROI-Queries-in-CT-Scans/annotations/datafullbody0206.json"
-    csv_path = "dataset_features/02063.csv"
+    csv_path = "dataset_features/test/02063.csv"
 
     extract_csv(parent_dir, json_path, csv_path, 1)
