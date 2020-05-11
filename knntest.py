@@ -1,20 +1,20 @@
 import pandas
 from sklearn import neighbors
 import pickle
+from feature_extraction.haar_test import *
 import os
 
-path = 'testcsv'
-result = 'result'
+path = '/mnt/32D84D55D84D188D/ubuntu-data-hdd/dataset/FULL_001/crop'
+model_path = '/home/dungpb/Work/HUS-AC/ROI-Queries-in-CT-Scans/model/05115.sav'
 
-patient_path = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
+img = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
+img.sort()
+X_test = []
 
-for pp in patient_path:
-    ppcsv = os.path.join(path,pp)
-    data = pandas.read_csv(ppcsv, header=None)
-    x_test = data.to_numpy()
-    filename = 'model/bl_rt.sav'
-    model = pickle.load(open(filename, 'rb'))
-    ppresult = os.path.join(result, pp+".txt")
-    f = open(ppresult, "w")
-    f.write(str(model.predict(x_test)))
-    f.close()
+for i in range(len(img)):
+    print(i)
+    img_data = cv2.imread(os.path.join(path, img[i]),0)
+    X_test.append(haar_extract(img_data,(256,256)))
+
+model = pickle.load(open(model_path,'rb'))
+print(model.predict(X_test))

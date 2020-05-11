@@ -5,7 +5,7 @@ import pickle
 import numpy as np
 from feature_extraction.haar_test import *
 
-csv_path = "dataset_features/bt_rt.csv"
+csv_path = "dataset_features/0511.csv"
 
 path = '/home/dungpb/125Resize_offical'
 
