@@ -1,12 +1,13 @@
 import pandas
 from sklearn.model_selection import train_test_split
 from sklearn import neighbors, metrics
+from datetime import datetime
 import pickle
 from sklearn.svm import SVC
 
+start=datetime.now()
 
-
-filename = '11058.csv'
+filename = '3110519.csv'
 
 datatrain = pandas.read_csv('dataset_features/train/'+filename, header=None)
 X = datatrain[datatrain.columns[1:datatrain.shape[1]]].to_numpy()
@@ -24,14 +25,17 @@ X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=round(len(X)
 # clf.fit(X_train, Y_train)
 #
 #
-model = neighbors.KNeighborsClassifier(n_neighbors= 7, p = 1)
+model = neighbors.KNeighborsClassifier(n_neighbors= 5, p = 2, weights='distance')
 model.fit(X_train, Y_train)
+end = datetime.now()
+print (end-start)
 #
 print("Accuracy : %.2f %%" %(100*model.score(X_test, Y_test)))
+print (datetime.now()-end)
 print("F1 : %.2f %%" %(100*metrics.f1_score(y_true=Y_test, y_pred=model.predict(X_test), average='weighted')))
-# filename = 'model/05115.sav'
-# with open(filename, 'wb') as file:
-#     pickle.dump(model, file)
+filename = 'model/110519.sav'
+with open(filename, 'wb') as file:
+    pickle.dump(model, file)
 
 # load = pickle.load(open(filename,'rb'))
 # y_p = model.pr

@@ -3,6 +3,7 @@ import csv
 import os
 import cv2
 from feature_extraction.haar_test import *
+import pickle
 
 # mode : 0 - lay cac gia tri theo vung dau, bung, nguc
 # mode : 1 - lay cac gia tri theo bat dau va ket thuc cua moi vung
@@ -70,6 +71,7 @@ class Patient:
         self.__abdominal_begin = abdominal_begin
         self.__abdominal_end = abdominal_end
         self.__features = []
+        self.__region = []
 
     def init_features(self):
         img_path = [f for f in os.listdir(self.__patient_dir) if os.path.isfile(os.path.join(self.__patient_dir, f))]
@@ -77,48 +79,68 @@ class Patient:
         for i in range(0,self.__num_img - 1):
             img = cv2.imread(os.path.join(self.__patient_dir, img_path[i]), 0)
             img_size = 256
-            self.__features.append(haar_extract(img, (img_size, img_size)))
+            self.__features.append(list(tuyetvong(img, (img_size, img_size))))
+            # print(list(tuyetvong(img, (img_size, img_size))))
 
     def write_csv(self, csv_path: str, mode: int):
-        with open(csv_path, 'a') as csv_file:
-            wr = csv.writer(csv_file, delimiter=',')
-            count = 0
-            for i in range(0, self.__num_img):
-                region = 0
+        for i in range(0, self.__num_img - 1):
+            region = 0
 
-                if self.__head_begin <= i <= self.__head_end:
-                    region = 2
-                if self.__chest_begin <= i <= self.__chets_end:
-                    region = 5
-                if self.__abdominal_begin <= i <= self.__abdominal_end:
-                    region = 8
-                if mode == 0:
-                    wr.writerow([str(region)] + list(self.__features[i]))
+            if self.__head_begin <= i <= self.__head_end:
+                region = 2
+            if self.__chest_begin <= i <= self.__chets_end:
+                region = 5
+            if self.__abdominal_begin <= i <= self.__abdominal_end:
+                region = 8
+            self.__region.append(region)
+        model_path = '/model/offcial/110518.sav'
+        model = pickle.load(open(model_path, 'rb'))
+        count = 0
+        Y_pre = model.predict(self.__features)
+        for i in range(0, self.__num_img - 1):
+            if Y_pre[i] == self.__region[i]:
+                count += 1
 
-                if mode == 1 :
-                    if region == 0 and count < 6:
-                        wr.writerow([str(region)] + list(self.__features[i]))
-                        count += 1
-                    if self.__head_begin <= i <= self.__head_begin + 5:
-                        wr.writerow([str(1)] + list(self.__features[i]))
-                    if self.__head_end - 5 <= i <= self.__head_end:
-                        wr.writerow([str(3)] + list(self.__features[i]))
-                    if self.__chest_begin <= i <= self.__chest_begin + 5:
-                        wr.writerow([str(4)] + list(self.__features[i]))
-                    if self.__chets_end - 5 <= i <= self.__chets_end:
-                        wr.writerow([str(6)] + list(self.__features[i]))
-                    if self.__abdominal_begin <= i <= self.__abdominal_begin + 5:
-                        wr.writerow([str(7)] + list(self.__features[i]))
-                    if self.__abdominal_end - 5 <= i <= self.__abdominal_end:
-                        wr.writerow([str(9)] + list(self.__features[i]))
+        print(count/self.__num_img)
+
+        # with open(csv_path, 'a') as csv_file:
+        #     wr = csv.writer(csv_file, delimiter=',')
+        #     countf2 = 0
+        #     count = 0
+
+
+            #     if mode == 0:
+            #         # wr.writerow([str(region)] + list(self.__features[i]))
+            #         # print(list(self.__features[i]))
+            #         X_test = []
+            #         X_test.append(self.__features[i])
+            #         if region == model.predict(X_test)[0]:
+            #             countf2 += 1
+            #
+            #     if mode == 1 :
+            #         if region == 0 and count < 6:
+            #             wr.writerow([str(region)] + list(self.__features[i]))
+            #             count += 1
+            #         if self.__head_begin <= i <= self.__head_begin + 5:
+            #             wr.writerow([str(1)] + list(self.__features[i]))
+            #         if self.__head_end - 5 <= i <= self.__head_end:
+            #             wr.writerow([str(3)] + list(self.__features[i]))
+            #         if self.__chest_begin <= i <= self.__chest_begin + 5:
+            #             wr.writerow([str(4)] + list(self.__features[i]))
+            #         if self.__chets_end - 5 <= i <= self.__chets_end:
+            #             wr.writerow([str(6)] + list(self.__features[i]))
+            #         if self.__abdominal_begin <= i <= self.__abdominal_begin + 5:
+            #             wr.writerow([str(7)] + list(self.__features[i]))
+            #         if self.__abdominal_end - 5 <= i <= self.__abdominal_end:
+            #             wr.writerow([str(9)] + list(self.__features[i]))
 
 
 
 
 
 if __name__ == "__main__":
-    parent_dir = "/home/dungpb/dataset1"
+    parent_dir = "/mnt/32D84D55D84D188D/ubuntu-data-hdd/dataset"
     json_path = "/home/dungpb/Work/HUS-AC/ROI-Queries-in-CT-Scans/annotations/datafullbody0206.json"
-    csv_path = "dataset_features/test/02063.csv"
+    csv_path = "dataset_features/test/02062342343.csv"
 
-    extract_csv(parent_dir, json_path, csv_path, 1)
+    extract_csv(parent_dir, json_path, csv_path, 0)
